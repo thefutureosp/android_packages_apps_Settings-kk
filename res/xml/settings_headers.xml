@@ -92,6 +92,13 @@
         android:icon="@drawable/ic_settings_system"
         android:fragment="com.android.settings.cyanogenmod.SystemUiSettings"
         android:title="@string/system_settings_title" />
+        
+    <!-- Performance -->
+    <header
+        android:id="@+id/performance_settings"
+        android:fragment="com.android.settings.cyanogenmod.PerformanceSettings"
+        android:icon="@drawable/ic_settings_performance"
+        android:title="@string/performance_settings_title" />        
 
     <!-- DEVICE -->
     <header android:id="@+id/device_section"
@@ -251,13 +258,6 @@
         android:fragment="com.android.settings.DevelopmentSettings"
         android:icon="@drawable/ic_settings_development"
         android:title="@string/development_settings_title" />
-
-    <!-- Performance -->
-    <header
-        android:id="@+id/performance_settings"
-        android:fragment="com.android.settings.cyanogenmod.PerformanceSettings"
-        android:icon="@drawable/ic_settings_performance"
-        android:title="@string/performance_settings_title" />
 
     <!-- About Device -->
     <header
