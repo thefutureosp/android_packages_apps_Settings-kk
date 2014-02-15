@@ -242,21 +242,29 @@ final class LocalBluetoothProfileManager {
         }
 
         public void onReceive(Context context, Intent intent, BluetoothDevice device) {
+            int newState = intent.getIntExtra(BluetoothProfile.EXTRA_STATE, 0);
+            int oldState = intent.getIntExtra(BluetoothProfile.EXTRA_PREVIOUS_STATE, 0);
+            if (DEBUG) {
+                Log.d(TAG, mProfile + " state change " + oldState + " -> " + newState);
+            }
             CachedBluetoothDevice cachedDevice = mDeviceManager.findDevice(device);
-            if (cachedDevice == null) {
+
+            if ((cachedDevice == null) && ((newState != BluetoothProfile.STATE_DISCONNECTED)
+                && (newState != BluetoothProfile.STATE_DISCONNECTING))) {
                 Log.w(TAG, "StateChangedHandler found new device: " + device);
                 cachedDevice = mDeviceManager.addDevice(mLocalAdapter,
                         LocalBluetoothProfileManager.this, device);
             }
-            int newState = intent.getIntExtra(BluetoothProfile.EXTRA_STATE, 0);
-            int oldState = intent.getIntExtra(BluetoothProfile.EXTRA_PREVIOUS_STATE, 0);
+
             if (newState == BluetoothProfile.STATE_DISCONNECTED &&
                     oldState == BluetoothProfile.STATE_CONNECTING) {
                 Log.i(TAG, "Failed to connect " + mProfile + " device");
             }
 
-            cachedDevice.onProfileStateChanged(mProfile, newState);
-            cachedDevice.refresh();
+            if (cachedDevice != null) {
+               cachedDevice.onProfileStateChanged(mProfile, newState);
+               cachedDevice.refresh();
+            }
         }
     }
 
@@ -339,7 +347,7 @@ final class LocalBluetoothProfileManager {
     synchronized void updateProfiles(ParcelUuid[] uuids, ParcelUuid[] localUuids,
             Collection<LocalBluetoothProfile> profiles,
             Collection<LocalBluetoothProfile> removedProfiles,
-            boolean isPanNapConnected) {
+            boolean isPanNapConnected, BluetoothDevice device) {
         // Copy previous profile list into removedProfiles
         removedProfiles.clear();
         removedProfiles.addAll(profiles);
@@ -359,10 +367,21 @@ final class LocalBluetoothProfileManager {
             }
         }
 
-        if (BluetoothUuid.containsAnyUuid(uuids, A2dpProfile.SINK_UUIDS) &&
-            mA2dpProfile != null) {
-            profiles.add(mA2dpProfile);
-            removedProfiles.remove(mA2dpProfile);
+        if (SystemProperties.getBoolean("bluetooth.a2dp.sink.enabled", true)) {
+            Log.d(TAG, "a2dpSinkSupported, check for both sink and source UUIDs");
+            if ((BluetoothUuid.containsAnyUuid(uuids, A2dpProfile.SOURCE_UUIDS) ||
+                BluetoothUuid.containsAnyUuid(uuids, A2dpProfile.SINK_UUIDS))&&
+                mA2dpProfile != null) {
+                profiles.add(mA2dpProfile);
+                removedProfiles.remove(mA2dpProfile);
+            }
+        } else {
+            Log.d(TAG, "a2dpSinkNotSupported, check for only sink UUIDs");
+            if (BluetoothUuid.containsAnyUuid(uuids, A2dpProfile.SINK_UUIDS) &&
+                mA2dpProfile != null) {
+                profiles.add(mA2dpProfile);
+                removedProfiles.remove(mA2dpProfile);
+            }
         }
 
         if (BluetoothUuid.isUuidPresent(uuids, BluetoothUuid.ObexObjectPush) &&
@@ -384,6 +403,13 @@ final class LocalBluetoothProfileManager {
             mPanProfile != null) || isPanNapConnected) {
             profiles.add(mPanProfile);
             removedProfiles.remove(mPanProfile);
+        }
+
+        if ((mMapProfile != null) &&
+            (mMapProfile.getConnectionStatus(device) == BluetoothProfile.STATE_CONNECTED)) {
+            profiles.add(mMapProfile);
+            removedProfiles.remove(mMapProfile);
+            mMapProfile.setPreferred(device, true);
         }
     }
 

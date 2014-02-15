@@ -46,6 +46,7 @@ import android.view.IWindowManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -89,6 +90,8 @@ public class KeyguardAppWidgetPickActivity extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().addPrivateFlags(
+                WindowManager.LayoutParams.PRIVATE_FLAG_INHERIT_TRANSLUCENT_DECOR);
         setContentView(R.layout.keyguard_appwidget_picker_layout);
         super.onCreate(savedInstanceState);
 
@@ -120,6 +123,9 @@ public class KeyguardAppWidgetPickActivity extends Activity
         mAppWidgetAdapter = new AppWidgetAdapter(this, mItems);
         mGridView.setAdapter(mAppWidgetAdapter);
         mGridView.setOnItemClickListener(this);
+        mGridView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
         mLockPatternUtils = new LockPatternUtils(this); // TEMP-- we want to delete this
     }

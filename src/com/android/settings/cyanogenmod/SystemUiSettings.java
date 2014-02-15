@@ -23,6 +23,7 @@ import android.os.RemoteException;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.util.Log;
@@ -39,113 +40,114 @@ public class SystemUiSettings extends SettingsPreferenceFragment  implements
     private static final String KEY_EXPANDED_DESKTOP = "expanded_desktop";
     private static final String KEY_EXPANDED_DESKTOP_NO_NAVBAR = "expanded_desktop_no_navbar";
     private static final String CATEGORY_NAVBAR = "navigation_bar";
-    private static final String KEY_PIE_CONTROL = "pie_control";
     private static final String KEY_SCREEN_GESTURE_SETTINGS = "touch_screen_gesture_settings";
+    private static final String KEY_NAVIGATION_BAR_LEFT = "navigation_bar_left";
 
-    private PreferenceScreen mPieControl;
+    // Enable/disable nav bar	
+    private static final String ENABLE_NAVIGATION_BAR = "enable_nav_bar";
+
     private ListPreference mExpandedDesktopPref;
     private CheckBoxPreference mExpandedDesktopNoNavbarPref;
+    private CheckBoxPreference mNavigationBarLeftPref;
+ 
+    // Enable/disable nav bar
+    private CheckBoxPreference mEnableNavigationBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.system_ui_settings);
-//        PreferenceScreen prefScreen = getPreferenceScreen();
-//
-//        mPieControl = (PreferenceScreen) findPreference(KEY_PIE_CONTROL);
-//
-//        // Expanded desktop
-//        mExpandedDesktopPref = (ListPreference) findPreference(KEY_EXPANDED_DESKTOP);
-//        mExpandedDesktopNoNavbarPref =
-//                (CheckBoxPreference) findPreference(KEY_EXPANDED_DESKTOP_NO_NAVBAR);
-//
-//        Utils.updatePreferenceToSpecificActivityFromMetaDataOrRemove(getActivity(),
-//                getPreferenceScreen(), KEY_SCREEN_GESTURE_SETTINGS);
-//
-//        int expandedDesktopValue = Settings.System.getInt(getContentResolver(),
-//                Settings.System.EXPANDED_DESKTOP_STYLE, 0);
-//
-//        try {
-//            boolean hasNavBar = WindowManagerGlobal.getWindowManagerService().hasNavigationBar();
-//
-//            // Hide no-op "Status bar visible" mode on devices without navigation bar
-//            if (hasNavBar) {
-//                mExpandedDesktopPref.setOnPreferenceChangeListener(this);
-//                mExpandedDesktopPref.setValue(String.valueOf(expandedDesktopValue));
-//                updateExpandedDesktop(expandedDesktopValue);
-//                prefScreen.removePreference(mExpandedDesktopNoNavbarPref);
-//            } else {
-//                mExpandedDesktopNoNavbarPref.setOnPreferenceChangeListener(this);
-//                mExpandedDesktopNoNavbarPref.setChecked(expandedDesktopValue > 0);
-//                prefScreen.removePreference(mExpandedDesktopPref);
-//            }
-//
-//            // Hide navigation bar category on devices without navigation bar
-//            if (!hasNavBar) {
-//                prefScreen.removePreference(findPreference(CATEGORY_NAVBAR));
-//                mPieControl = null;
-//            }
-//        } catch (RemoteException e) {
-//            Log.e(TAG, "Error getting navigation bar status");
-//        }
+        PreferenceScreen prefScreen = getPreferenceScreen();
+
+        // Expanded desktop
+        mExpandedDesktopPref = (ListPreference) findPreference(KEY_EXPANDED_DESKTOP);
+
+        // Navigation bar left
+        mNavigationBarLeftPref = (CheckBoxPreference) findPreference(KEY_NAVIGATION_BAR_LEFT);
+        
+        Utils.updatePreferenceToSpecificActivityFromMetaDataOrRemove(getActivity(),
+                getPreferenceScreen(), KEY_SCREEN_GESTURE_SETTINGS);
+
+        int expandedDesktopValue = Settings.System.getInt(getContentResolver(),
+                Settings.System.EXPANDED_DESKTOP_STYLE, 0);
+
+        try {
+            boolean hasNavBar = WindowManagerGlobal.getWindowManagerService().hasNavigationBar();
+
+            if (hasNavBar) {
+                if (!Utils.isPhone(getActivity())) {
+                    PreferenceCategory navCategory =
+                            (PreferenceCategory) findPreference(CATEGORY_NAVBAR);
+                    navCategory.removePreference(mNavigationBarLeftPref);
+                }
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error getting navigation bar status");
+        }
+
+        // All Expanded desktop options for all devices
+        mExpandedDesktopPref.setOnPreferenceChangeListener(this);
+        mExpandedDesktopPref.setValue(String.valueOf(expandedDesktopValue));
+        updateExpandedDesktop(expandedDesktopValue);
+        
+        boolean hasNavBarByDefault = getResources().getBoolean(
+                com.android.internal.R.bool.config_showNavigationBar);
+        boolean enableNavigationBar = Settings.System.getInt(getContentResolver(),
+                Settings.System.NAVIGATION_BAR_SHOW, hasNavBarByDefault ? 1 : 0) == 1;
+        mEnableNavigationBar = (CheckBoxPreference) findPreference(ENABLE_NAVIGATION_BAR);
+        mEnableNavigationBar.setChecked(enableNavigationBar);
+        mEnableNavigationBar.setOnPreferenceChangeListener(this);
+
+	updateNavbarPreferences(enableNavigationBar);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        //updatePieControlSummary();
-    }
+    // Enable/disbale nav bar
+    private void updateNavbarPreferences(boolean show) {}
 
     public boolean onPreferenceChange(Preference preference, Object objValue) {
-//        if (preference == mExpandedDesktopPref) {
-//            int expandedDesktopValue = Integer.valueOf((String) objValue);
-//            updateExpandedDesktop(expandedDesktopValue);
-//            return true;
-//        } else if (preference == mExpandedDesktopNoNavbarPref) {
-//            boolean value = (Boolean) objValue;
-//            updateExpandedDesktop(value ? 2 : 0);
-//            return true;
-//        }
-//
+        if (preference == mExpandedDesktopPref) {
+            int expandedDesktopValue = Integer.valueOf((String) objValue);
+            updateExpandedDesktop(expandedDesktopValue);
+            return true;
+        } else if (preference == mExpandedDesktopNoNavbarPref) {
+            boolean value = (Boolean) objValue;
+            updateExpandedDesktop(value ? 2 : 0);
+            return true;
+	// Enable/disbale nav bar (used in custom nav bar dimensions)
+	} else if (preference == mEnableNavigationBar) {
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.NAVIGATION_BAR_SHOW,
+                    ((Boolean) objValue) ? 1 : 0);
+            updateNavbarPreferences((Boolean) objValue);
+            return true;
+        }
+
         return false;
     }
-//
-//    private void updatePieControlSummary() {
-//        if (mPieControl != null) {
-//            boolean enabled = Settings.System.getInt(getContentResolver(),
-//                Settings.System.PIE_CONTROLS, 0) != 0;
-//
-//            if (enabled) {
-//                mPieControl.setSummary(R.string.pie_control_enabled);
-//            } else {
-//                mPieControl.setSummary(R.string.pie_control_disabled);
-//            }
-//        }
-//    }
-//
-//    private void updateExpandedDesktop(int value) {
-//        ContentResolver cr = getContentResolver();
-//        Resources res = getResources();
-//        int summary = -1;
-//
-//        Settings.System.putInt(cr, Settings.System.EXPANDED_DESKTOP_STYLE, value);
-//
-//        if (value == 0) {
-//            // Expanded desktop deactivated
-//            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 0);
-//            Settings.System.putInt(cr, Settings.System.EXPANDED_DESKTOP_STATE, 0);
-//            summary = R.string.expanded_desktop_disabled;
-//        } else if (value == 1) {
-//            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 1);
-//            summary = R.string.expanded_desktop_status_bar;
-//        } else if (value == 2) {
-//            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 1);
-//            summary = R.string.expanded_desktop_no_status_bar;
-//        }
-//
-//        if (mExpandedDesktopPref != null && summary != -1) {
-//            mExpandedDesktopPref.setSummary(res.getString(summary));
-//        }
-//    }
+
+    private void updateExpandedDesktop(int value) {
+        ContentResolver cr = getContentResolver();
+        Resources res = getResources();
+        int summary = -1;
+
+        Settings.System.putInt(cr, Settings.System.EXPANDED_DESKTOP_STYLE, value);
+
+        if (value == 0) {
+            // Expanded desktop deactivated
+            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 0);
+            Settings.System.putInt(cr, Settings.System.EXPANDED_DESKTOP_STATE, 0);
+            summary = R.string.expanded_desktop_disabled;
+        } else if (value == 1) {
+            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 1);
+            summary = R.string.expanded_desktop_status_bar;
+        } else if (value == 2) {
+            Settings.System.putInt(cr, Settings.System.POWER_MENU_EXPANDED_DESKTOP_ENABLED, 1);
+            summary = R.string.expanded_desktop_no_status_bar;
+        }
+
+        if (mExpandedDesktopPref != null && summary != -1) {
+            mExpandedDesktopPref.setSummary(res.getString(summary));
+        }
+    }
 }
