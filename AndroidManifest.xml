@@ -1793,7 +1793,9 @@
         </activity>
 
         <activity android:name=".cyanogenmod.ChangeLog" />
-
+        
+        <activity android:name=".orca.LockscreenNotifications" />
+        
         <activity android:name=".cyanogenmod.LockscreenInterface" />
 
         <activity android:name=".orca.CustomCarrier" />
