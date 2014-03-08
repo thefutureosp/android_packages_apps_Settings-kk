@@ -1,7 +1,7 @@
 /*
- * Based on: http://www.lukehorvat.com/blog/android-numberpickerdialogpreference/
- * Thanks to the original author!
- */
+* Based on: http://www.lukehorvat.com/blog/android-numberpickerdialogpreference/
+* Thanks to the original author!
+*/
 
 package com.android.settings.orca;
 

@@ -38,10 +38,6 @@
             android:entries="@array/lockscreen_battery_status_entries"
             android:entryValues="@array/lockscreen_battery_status_values"
             android:defaultValue="0" />
-            
-		<PreferenceScreen
-            android:title="@string/lockscreen_notifications"
-            android:fragment="com.android.settings.orca.LockscreenNotifications" />            
         
         <Preference
             android:fragment="com.android.settings.cyanogenmod.LockscreenTargets"
@@ -64,6 +60,22 @@
             android:key="see_through"
             android:title="@string/see_through_title"
             android:summary="@string/see_through_summary" />
+
+        <com.android.settings.orca.SeekBarPreferenceCHOS
+            android:key="lockscreen_blur_radius"
+            android:title="@string/blur_radius_title"
+            android:summary="@string/blur_radius_summary"
+            android:max="25"
+            settings:minimun="0"
+            settings:unitsLeft=""
+            settings:unitsRight=""
+            android:persistent="false"
+            android:dependency="see_through" />
+
+        <PreferenceScreen
+            android:title="@string/lockscreen_notifications"
+            android:fragment="com.android.settings.orca.LockscreenNotifications"
+            android:summary="@string/lockscreen_notifications_summary" />
 
     </PreferenceCategory>
 

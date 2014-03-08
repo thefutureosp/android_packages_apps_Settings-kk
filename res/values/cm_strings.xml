@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2012-2013 The CyanogenMod Project
+     Copyright (C) 2012-2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -506,7 +506,7 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <string name="performance_settings_title">Performance</string>
 
     <!-- Performance Settings : Warning dialog -->
-    <string name="performance_settings_warning_title">Proceed with Caution</string>
+    <string name="performance_settings_warning_title">Proceed with caution</string>
     <string name="performance_settings_warning">These settings are included for experimentation and any changes made to them have the potential to cause instability, crashes, data loss or hardware failures.\n\nWe request you do not file bug reports if any of these settings have been changed from the defaults.</string>
 
     <!-- Performance Settings : Set on boot option -->
@@ -637,7 +637,8 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <!-- Hardware tunables - Gamma calibration -->
     <string name="gamma_tuning_title_head">Gamma calibration</string>
     <string name="gamma_tuning_summary_head">Tweak gamma values</string>
-    <string name="gamma_tuning_control_set_header">Group <xliff:g id="index">%d</xliff:g></string> <!-- used if no name provided by overlay -->
+    <!-- Used if no name provided by overlay -->
+    <string name="gamma_tuning_control_set_header">Group <xliff:g id="index">%d</xliff:g></string>
     <string name="gamma_tuning_contrast">Contrast</string>
     <string name="gamma_tuning_brightness">Brightness</string>
     <string name="gamma_tuning_saturation">Saturation</string>
@@ -818,9 +819,12 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <string name="power_menu_reboot_title">Reboot menu</string>
     <string name="power_menu_screenshot_title">Screenshot</string>
     <string name="power_menu_expanded_desktop">Expanded desktop</string>
+    <string name="expanded_desktop_style">Expanded desktop style</string>
     <string name="expanded_desktop_disabled">Disabled</string>
     <string name="expanded_desktop_status_bar">Status bar visible</string>
     <string name="expanded_desktop_no_status_bar">Status bar hidden</string>
+    <string name="expanded_desktop_system_bars_visibility">Disable in lock screen</string>
+    <string name="expanded_desktop_system_bars_visibility_summary">Show status and navigation bar in lock screen during expanded desktop mode</string>
     <string name="power_menu_profiles_title">Profile switcher</string>
     <string name="power_menu_airplane_title">Airplane mode</string>
     <string name="power_menu_user_title">User switcher</string>
@@ -913,13 +917,11 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
 
     <!-- WhisperPush -->
     <string name="whisperpush_title">WhisperPush</string>
-    <string name="whisperpush_registration_title">Register</string>
-    <string name="whisperpush_registration_summary">Register for WhisperPush to enable encrypted SMS.</string>
-    <string name="whisperpush_identitykey_title">Review identity keys</string>
+    <string name="whisperpush_summary">Manage secure SMS settings.</string>
 
     <!-- Message of dialog confirming that user wants to restart their device with a new runtime -->
     <string name="custom_runtime_warning_title">Warning</string>
-    <string name="custom_runtime_warning_message">ART is not supported by CyanogenMod. This setting is included for experimentation only and has the potential to cause instability, crashes, data loss or prevent the proper boot of your device. Visit &lt;a href=\"http://source.android.com/devices/tech/dalvik/art.html\"&gt;Introducing ART&lt;/a&gt; for more information.&lt;br/&gt;&lt;br/&gt;We request you do not file bug reports if you have enabled ART as your runtime.&lt;br/&gt;&lt;br/&gt;Are you sure you want to reboot to change runtime from <xliff:g id="old" example="libdvm.so">%1$s</xliff:g> to <xliff:g id="new" example="libart.so">%2$s</xliff:g>?</string>
+    <string name="custom_runtime_warning_message">ART is not supported by Orca. This setting is included for experimentation only and has the potential to cause instability, crashes, data loss or prevent the proper boot of your device. Visit \u003Ca href=\"http://source.android.com/devices/tech/dalvik/art.html\"\u003EIntroducing ART\u003C/a\u003E for more information.\u003Cbr/\u003E\u003Cbr/\u003EWe request you do not file bug reports if you have enabled ART as your runtime.\u003Cbr/\u003E\u003Cbr/\u003EAre you sure you want to reboot to change runtime from <xliff:g id="old" example="libdvm.so">%1$s</xliff:g> to <xliff:g id="new" example="libart.so">%2$s</xliff:g>?</string>
 
     <!-- GPS download data over wi-fi only -->
     <string name="gps_download_data_wifi_only">Download GPS assisted data only over Wi-Fi networks</string>
@@ -931,11 +933,6 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
 
     <!-- Menu label for reset the battery stats -->
     <string name="menu_stats_reset">Reset</string>
-
-    <!-- CM Legal -->
-    <string name="cmlicense_title">CyanogenMod Legal</string>
-    <string name="settings_cmlicense_activity_title">CyanogenMod Legal</string>
-    <string name="settings_cmlicense_activity_unreachable">You don\'t have a data connection. To view this information now, go to %s from any computer connected to the Internet.</string>
 
     <!-- Stylus Icon -->
     <string name="stylus_icon_enabled_title">Show icon when using stylus</string>
@@ -981,6 +978,13 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <string name="app_ops_labels_alarm_wakeup">Wake up</string>
     <string name="app_ops_summaries_auto_start">auto start</string>
     <string name="app_ops_labels_auto_start">Auto start</string>
+    <string name="app_ops_summaries_send_mms">send MMS</string>
+    <string name="app_ops_labels_send_mms">Send MMS</string>
+    <string name="app_ops_summaries_read_mms">read MMS</string>
+    <string name="app_ops_labels_read_mms">Read MMS</string>
+    <string name="app_ops_summaries_write_mms">write MMS</string>
+    <string name="app_ops_labels_write_mms">Write MMS</string>
+
     <!-- App ops categories -->
     <string name="app_ops_categories_bootup">Bootup</string>
     <!-- App ops detail -->
@@ -988,16 +992,14 @@ two in order to insert additional control points. \'Remove\' deletes the selecte
     <string name="app_ops_allowed_count">Allowed <xliff:g id="count" example="2 times">%s</xliff:g></string>
     <string name="app_ops_ignored_count">Denied <xliff:g id="count" example="2 times">%s</xliff:g></string>
     <string name="app_ops_both_count">Allowed <xliff:g id="count">%1$s</xliff:g>, denied <xliff:g id="count">%2$s</xliff:g></string>
-    <plurals name="app_ops_count">
-        <item quantity="one">once</item>
-        <item quantity="other">%d times</item>
-    </plurals>
-
     <!-- App ops menu options -->
     <string name="app_ops_show_user_apps">Show user apps</string>
     <string name="app_ops_show_system_apps">Show built-in apps</string>
     <string name="app_ops_reset_counters">Reset allow/deny counters</string>
     <string name="app_ops_reset_confirm_title">Confirm counters reset</string>
-    <string name="app_ops_reset_confirm_mesg">Are you sure you wish to reset AppOps counters ?</string>
+    <string name="app_ops_reset_confirm_mesg">Are you sure you wish to reset AppOps counters?</string>
 
+    <!-- EdgeGesture service -->
+    <string name="edge_gesture_service_title">Block gesture touch events</string>
+    <string name="edge_gesture_service_summary">Don\'t send touch events for navigation and status bar gestures to apps</string>
 </resources>
