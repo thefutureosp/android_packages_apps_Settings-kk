@@ -328,5 +328,10 @@
     <!-- Custom Recent Settings -->
     <string name="custom_recent_title">Mudar entre estilos de recentes</string>
     <string name="custom_recent_summary">Marque para o estilo Slim Roms ou desmarque para o estilo normal. MARCANDO OU DESMARCANDO ESSA OPÇÃO IRÁ REINICIAR O SEU SYSTEMUI</string>
+    
+    <!-- Lockscreen Lid Settings -->
+    <string name="smart_cover_category_title">Capa inteligente</string>
+    <string name="smart_cover_wake_title">Acordar usando capa inteligente</string>
+    <string name="smart_cover_wake_summary">Acordar o aparelho quando abrir a capa inteligente (smart cover)</string>    
 
 </resources>
